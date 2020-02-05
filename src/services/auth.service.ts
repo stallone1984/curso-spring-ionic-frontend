@@ -4,9 +4,12 @@ import { API_CONFIG } from './../config/api.config';
 import { CredenciaisDTO } from './../models/credenciais.dto';
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
+import { JwtHelperService } from "@auth0/angular-jwt";
 
 @Injectable()
 export class AuthService {
+
+  jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(
     public http: HttpClient,
@@ -27,9 +30,10 @@ export class AuthService {
   }
 
   successfulLogin(authorizationValue: string) {
-    let token = authorizationValue.substring(7);
+    let tok = authorizationValue.substring(7);
     let user : LocalUser = {
-      token: token
+      token: tok,
+      email: this.jwtHelper.decodeToken(tok).sub
     }
 
     this.storageService.setLocalUser(user);
