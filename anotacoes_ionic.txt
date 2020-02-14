@@ -1,0 +1,324 @@
+-> Instalar a versão compatível com o curso (Ionic 3)
+> npm install -g ionic@3.19.0 cordova@7.1.0
+-> Caso precise desinstalar uma versão anterior:
+> npm uninstall -g cordova
+> npm uninstall -g ionic
+> npm cache clean -f
+> npm install npm -g
+
+*** Nivelamento sobre JS, TS, Angular e Ionic ***
+-> O cordova é o responsável por acessar as funções nativas dos dispositivos
+-> Ionic é um framework para criação de aplicativos móveis híbridos usando tecnologias web (Angular)
+-> Ionic roda nos dispositivos móveis por meio de uma web view
+
+*** 106 - Criando o projeto ***
+> ionic start CursoSpringIonic sidemenu
+-> sidemenu é um dos templates para a criação do projeto ionic
+-> Para rodar o projeto:
+> ionic serve
+-> Por padrão vai abrir o browse no endereço localhost:8100
+
+*** 107 - Analisando a estrutura do projeto usando VS code
+-> Para abrir o projeto no VS Code:
+> code .
+
+*** 108. Observação sobre o NPM: comando npm install
+-> Ao clonar um projeto do github, é necessário rodar o npm install para instalar as dependências.
+
+*** 109. Apagando página list ***
+
+*** 110. Lazy Loading ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/886bad84996761ac6a04727eb2276c4be551aae1
+-> É recomendado carregar as páginas sobre demanda
+http://blog.ionicframework.com/ionic-and-lazy-loading-pt-1/
+Atenção:
+- Toda página/componente deve estar declarado em um módulo da aplicação
+- Por padrão, criaremos um módulo para cada página
+
+-> Para transformar a HomePage em carregamento Lazy Loading:
+Checklist:
+ Incluir um módulo HomeModule (arquivo home.module.ts) para a página Home:
+import { IonicPageModule } from 'ionic-angular/module';
+import { NgModule } from '@angular/core';
+import { HomePage } from './home';
+@NgModule({
+ declarations: [HomePage],
+ imports: [IonicPageModule.forChild(HomePage)]
+})
+export class HomeModule {
+}
+ Em home.ts, incluir @IonicPage()
+ Em app.module.ts, retirar as referências para HomePage
+ Em app.componentes.ts, declarar a RootPage como um string, retirar import de HomePage
+
+*** 111. Tela inicial ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/050da956437b905e5326e17512e9fb5074a0c3ea
+<form>
+	<ion-item>
+	  <ion-label stacked>Email</ion-label>
+	  <ion-input type="text"></ion-input>
+	</ion-item>
+
+	<ion-item>
+	  <ion-label stacked>Senha</ion-label>
+	  <ion-input type="password"></ion-input>
+	</ion-item>
+
+	<button ion-button block>Entrar</button>
+</form>
+<button ion-button block outline>Registrar</button>
+
+*** 112. Navegação ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/5d9ba346f8338c256f51f9a868e9e42a74528896
+Checklist (navegação):
+ Criar página Categorias: ionic generate page Categorias
+ Incluir botão menuToggle na barra de navegação
+ Em home.ts, criar método login()
+ Em home.html, no botão de login, criar binding para método login()
+
+*** 113. Desabilitar menu na tela inicial ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/05ddcbcee21a552f86222d1d33281460678a8228
+
+constructor(
+    public navCtrl: NavController,
+    public menu: MenuController) {
+
+  }
+  
+  ionViewWillEnter() {
+    this.menu.swipeEnable(false);
+  }
+  
+  ionViewDidLeave() {
+    this.menu.swipeEnable(true);
+  }
+  
+*** 114. Listando categorias ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/b3eaedbe21058ad74bdcbd2a82de129c8470de71
+
+Referências:
+https://angular.io/guide/architecture
+"Component classes should be lean. They don't fetch data from the server, validate user input, or log directly
+to the console. They delegate such tasks to services.
+A component's job is to enable the user experience and nothing more. It mediates between the view
+(rendered by the template) and the application logic (which often includes some notion of a model). A good
+component presents properties and methods for data binding. It delegates everything nontrivial to services."
+https://angular.io/guide/http
+HttpClient - versão 4.3.1+
+Checklist:
+ Importar HttpClientModule no módulo principal (depois de BrowserModule)
+ Criar arquivo com configurações da API
+ Criar CategoriaDTO
+ Criar CategoriaService com método findAll
+ Em app.module.ts, registrar CategoriaService nos providers
+ Em CategoriasPage, chamar findAll
+
+*** 115. Mostrando as categorias ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/3b37ccc644a550030f0a537ac491599c923b257a
+
+Referências:
+https://ionicframework.com/docs/components/#thumbnail-list
+Referência atualizada:
+https://ionicframework.com/docs/api/thumbnail
+
+Checklist:
+ Em API_CONFIG, incluir a URL básica do bucket
+ Atualizar o component
+ Atualizar o template
+
+<ion-list >
+	<button ion-item *ngFor="let item of items">
+	  <ion-thumbnail item-start>
+		<img src="{{bucketUrl}}/cat{{item.id}}.jpg">
+	  </ion-thumbnail>
+	  <h2>{{ item.nome }}</h2>
+	</button>
+</ion-list>
+
+*** 116. Criando um interceptor para tratamento de erros ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/553985916ea1830a7217b366a340ebd8819a8849
+
+Referências:
+https://angular.io/guide/http
+https://theinfogrid.com/tech/developers/angular/building-http-interceptor-angular-5/
+https://stackoverflow.com/questions/46019771/catching-errors-in-angular-httpclient
+https://juristr.com/blog/2017/08/intercept-http-requests-in-angular/
+Checklist:
+ Criar um interceptor que retorne apenas o objeto de erro devolvido pelo backend
+ Declarar o provider do interceptor (pode ser no mesmo arquivo do interceptor)
+ Em app.module.ts, registrar o provider do interceptor
+
+*** 117. Obtendo os dados do formulário de login ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/b22a8609917f432a2fb8330b308df2ab57c5747a
+
+Checklist:
+ Criar um model CredenciaisDTO
+ Em home.ts, declarar um objeto do tipo CredenciaisDTO com valores vazios
+ Em home.html, fazer nos inputs o binding com os dados do objeto declarado
+ Em home.ts, testar o envio dos dados
+
+<ion-input type="text" name="email" [(ngModel)]="creds.email"></ion-input>
+
+*** 118. Começando a implementar a autenticação ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/ff0f92112399714636fafd404a153d6f86668029
+
+Checklist:
+ Criar um novo serviço AuthService com um método authenticate
+o observe : 'response'
+o responseType: 'text'
+ Em home.ts, chamar authenticate no método login
+ Em app.module.ts, declarar AuthService nos providers
+
+*** 119. Salvando os dados do usuário logado no localStorage ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/645dd21cd874191337fa106458878b9d4d77e902
+
+localStorage.getItem("chave")
+Retorna o valor (string) correspondente à chave, ou null caso a chave não exista
+localStorage.removeItem("chave")
+Remove o item do localStorage, caso ele exista
+localStorage.setItem("chave", "valor")
+Define um item no localStorage com a chave e valor dados
+
+Checklist:
+ Definir um nome de chave para o usuário logado ser armazenado no localStorage
+ Criar um tipo LocalUser correspondente aos dados do usuário logado
+ Criar um serviço StorageService para salvar e obter o usuário logado
+ Em app.module.ts, registrar o StorageService nos providers
+ Em AuthService, criar os métodos successfulLogin e logout
+ Em home.ts, chamar successfulLogin se a autenticação ocorrer com sucesso
+
+*** 120. Extraindo o email do token e armazenando-o em localStorage ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/c52df73fbea9af5c95ff4ffe156d0bef5ae946fb
+
+Checklist:
+ Instalar biblioteca para manipular token jwt:
+o npm install --save angular2-jwt
+ Em LocalUser, incluir o atributo email
+ Em AuthService, atualizar successfulLogin, incluindo email extraído do token
+
+-> Atenção: Utilizand o Angular8 é preciso utilizar outra biblioteca do angular-jwt:
+> npm install @auth0/angular-jwt
+
+
+*** 121. Criando uma página de profile ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/9ea931b799cfde4921b92577ee538c26ca71d571
+
+Checklist:
+ Criar página Profile
+ Em profile.ts, criar um atributo email e carregá-lo do storage
+ Em profile.html, mostrar o valor de email por meio de uma interpolação
+ Em app.component.ts, atualizar os itens do menu: Categorias e Profile
+
+*** 122. Mostrando dados e imagem do cliente para página de profile ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/884e899f86febcff6c7dbbf3a30fed5e8532ab6a
+
+Checklist:
+ Incluir uma imagem de avatar na pasta assets/imgs
+ Criar ClienteDTO
+ Criar o serviço ClienteService com o método findByEmail
+o Provisoriamente: inclua o header Authorization
+ Em app.module.ts, registrar ClienteService nos providers
+ Criar página Profile
+ Registrar a página Profile nos itens do menu da aplicação
+ Em profile.ts, chamar o método findByEmail
+ Atualizar HTML
+ Incluir lógica para obter a URL da imagem no bucket S3, se ela existir
+
+*** 123. Interceptor para incluir token nas requisições ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/a51a743b55695b688ac9aa57228aaaf52b4c0f23
+
+Referências:
+https://angular.io/guide/http
+http://blog.ionicframework.com/handling-cors-issues-in-ionic/
+https://stackoverflow.com/questions/11315872/allow-ajax-gets-from-amazon-s3-access-control-allow-origin
+http://docs.aws.amazon.com/pt_br/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors
+http://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-cors-configuration.html
+
+Checklist:
+ Criar AuthInterceptor
+o Atenção: getLocalUser() pode retornar null
+ Declarar o provider do interceptor (pode ser no mesmo arquivo do interceptor)
+ Em ClienteService, atualizar o código
+ Em app.module.ts, registrar o AuthInterceptorProvider ANTES do ErrorInterceptorProvider
+ Em AuthInterceptor, incluir código para não enviar header Authorization em caso de requisição para o
+bucket do S3
+
+-> Atenção: Prestar atenção à ordem dos interceptors.
+
+*** 124. Tratando erros 403 ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/f7a5a98c10e86c2a70990c8741726acbc3b1e1dd
+
+Checklist:
+ Em ErrorInterceptor, acrescentar um tratamento específico para 403
+ Em profile.ts, realizar o redirecionamento para HomePage em caso de erro 403
+Caso queira usar para teste de invalidação de token:
+localStorage.setItem('localUser',
+'{"token":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuZWxpby5jdXJzb3NAZ21haWwuY29tIiwiZXhwIjoxNTEzNjkxMTE1fQ.
+Bg8nyUf5Hsw2CC3dQffZrip822eFB18jNLrsySe51Eb-SioUH-uq7CQ4dWoBixZmzT-PWdE1iZZ1uRhuaaaaa","email":"nelio.cursos@gmail.com"}')
+
+*** 125. Tratamento padrão para outros erros com Alert ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/7f2de3bb90d7489780f981addb4ca500e91ecfae
+
+ Atualizar ErrorInterceptor
+ Tratar erros 401
+ Tratar outros erros
+
+*** 126. Fazendo o app aproveitar o usuário logado na tela inicial ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/e05cd83b6aec8a5d573ae8da9374358839dbcbfd
+
+Checklist:
+ Em AuthService, criar o método refreshToken
+ Em home.ts, implementar o evento ionViewDidEnter para chamar o refresh token
+
+*** 127. Botão de logout no menu ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/df5fea7def4d21bd1738ab3051ace0362abe1093
+
+Em app.component.ts, incluir código para fazer logout
+
+*** 128. Criando página de Signup ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/7249bc776e888eaf7c7f478235b47c1e4e06ae5e
+
+Checklist:
+ Criar página de Signup com Ionic CLI
+ Especificar o formulário HTML
+o Nota: usar (ngSubmit)="signupUser(); $event.preventDefault()" para evitar envio indesejado na
+página
+ Programar a navegação para a página de Signup
+ Testar evento de submissão do formulário
+
+*** 129. Criando um FormGroup para controlar o formulário ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/62560fdaf64ceb33441b1f534bf0e777fec516ca
+
+Checklist:
+ Em signup.ts, definir o formGroup
+ Em signup.html, fazer os devidos bindings
+
+*** 130. Povoando dinamicamente estado e cidade ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/5d7440c8f79dd7052719f91352ec61a07392d9a1
+
+Checklist:
+ Criar DTO para Cidade e Estado
+ Criar service para Cidade e Estado
+ Em signup.module.ts, registrar os serviços nos providers
+ Em signup.ts, implementar ionViewDidLoad para carregamento inicial dos estados e cidades
+ Em signup.html, povoar os <ion-option> com *ngFor
+ Criar um evento para carregar as cidades quando um estado é selecionado
+
+*** 131. Mostrando erros de validação ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/a3187f2132222206dca0f4dc1c61c46e9fe0eb7d
+
+Checklist:
+ Incluir tags para validação
+ Definir estilo CSS
+ Bloquear o formulário se ainda não estiver válido
+
+*** 132. Salvando novo cliente ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/33ea9536730177d472b2ffe885b632165f068740
+
+Checklist:
+ Em ClienteService, criar método para inserir
+ Em signup.ts, implementar a lógica para inserir
+ Criar um model FieldMessage
+ Em ErrorInterceptor, tratar especificamente o erro 422
+ Mostrar uma mensagem de confirmação de cadastro
+
