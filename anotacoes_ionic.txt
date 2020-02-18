@@ -197,7 +197,7 @@ o npm install --save angular2-jwt
  Em AuthService, atualizar successfulLogin, incluindo email extraído do token
 
 -> Atenção: Utilizand o Angular8 é preciso utilizar outra biblioteca do angular-jwt:
-> npm install @auth0/angular-jwt
+> npm install @auth0/angular-jwt --save
 
 
 *** 121. Criando uma página de profile ***
@@ -312,7 +312,7 @@ Checklist:
  Definir estilo CSS
  Bloquear o formulário se ainda não estiver válido
 
-*** 132. Salvando novo cliente ***
+*** 133. Salvando novo cliente ***
 Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/33ea9536730177d472b2ffe885b632165f068740
 
 Checklist:
@@ -321,4 +321,29 @@ Checklist:
  Criar um model FieldMessage
  Em ErrorInterceptor, tratar especificamente o erro 422
  Mostrar uma mensagem de confirmação de cadastro
+
+*** 134 - Criando página de produtos ***
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/8074ad91c093887ed5725d6c047e88261c236efc
+
+Referências:
+https://pt.stackoverflow.com/questions/191940/alterar-máscara-de-real-angular-2
+Checklist:
+ Criar ProdutoDTO
+ Criar página Produtos
+o Definir HTML
+o Definir script básico com dados mockados
+o Incluir a imagem de produto sem imagem na pasta assets/imgs
+ Em categorias.ts, acrescentar um método showProdutos() para abrir a página de produtos
+ Em categorias.html, acrescentar um binding de evento click para o método showProdutos()
+
+*** 135 - Carregando produtos de uma dada categoria ***
+Commit:
+
+Checklist:
+ Criar ProdutoService com um método findByCategoria para obter os produtos de uma dada categoria
+ Em app.module.ts, declarar ProdutoService nos providers
+ Em categorias.ts, em showProdutos, incluir o código da categoria como parâmetro da chamada de push
+ Em categorias.html, acrescentar o código da categoria como parâmetro na chamada showProdutos
+ Em produtos.ts, fazer as alterações necessárias
+
 
