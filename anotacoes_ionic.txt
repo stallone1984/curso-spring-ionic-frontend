@@ -337,7 +337,7 @@ o Incluir a imagem de produto sem imagem na pasta assets/imgs
  Em categorias.html, acrescentar um binding de evento click para o método showProdutos()
 
 *** 135 - Carregando produtos de uma dada categoria ***
-Commit:
+Commit: https://github.com/stallone1984/curso-spring-ionic-frontend/commit/01a22d941a04778f0bf866e6c08be23ca473329c
 
 Checklist:
  Criar ProdutoService com um método findByCategoria para obter os produtos de uma dada categoria
@@ -345,5 +345,13 @@ Checklist:
  Em categorias.ts, em showProdutos, incluir o código da categoria como parâmetro da chamada de push
  Em categorias.html, acrescentar o código da categoria como parâmetro na chamada showProdutos
  Em produtos.ts, fazer as alterações necessárias
+
+*** Carregando imagens dos produtos ***
+Commit:
+
+Checklist:
+ Em ProdutoService, implementar um método getSmallImageFromBucket
+ Em produtos.ts, criar um método para setar as URL's das imagens de miniatura dos produtos
+
 
 
